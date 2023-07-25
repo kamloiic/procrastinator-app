@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tl;d</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1 onclick="refreshPage()" class="brand" id="brandHeading">tl;dr</h1>
+
+    <div>
+      <label for="linkInput" id="linkLabel">link</label>
+      <input type="text" id="linkInput" />
+    </div>
+
+    <div>
+      <label for="nameInput" id="nameLabel">name</label>
+      <input type="text" id="nameInput" />
+    </div>
+
+    <div>
+      <button onclick="saveLink()" id="saveButton">save</button>
+    </div>
+
+    <div id="savedLinksSection">
+      <h2 id="linksHeading">saved links</h2>
+      <ul id="linksList"></ul>
+    </div>
+
+    <div class="githubLink">
+        <p>created by <span class="author"><a href="https://github.com/kamloiic" target="_blank">kamloiic</a> </span></p>
+
+      
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
