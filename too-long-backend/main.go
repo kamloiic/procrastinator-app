@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -17,13 +18,28 @@ import (
 var db *gorm.DB
 var err error
 
+type Link struct {
+	gorm.Model
+	URL         string `gorm:"column:url"`
+	Description string `gorm:"column:description"`
+}
+
 func main() {
 	// Connect to the PostgreSQL database
-	db, err = gorm.Open("postgres", "host=localhost port=5432 user=toolonguser dbname=postgres password=too-long-pass sslmode=disable")
-	if err != nil {
-		log.Fatal("Failed to connect to database: ", err)
-	}
-	defer db.Close()
+	dbHost := os.Getenv("DB_HOST")
+    dbPort := os.Getenv("DB_PORT")
+    dbUser := os.Getenv("DB_USER")
+    dbPassword := os.Getenv("DB_PASSWORD")
+    dbName := os.Getenv("DB_NAME")
+    
+    // Construct the database connection string
+    dbConnectionString := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbHost, dbPort, dbUser, dbName, dbPassword)
+
+	db, err = gorm.Open("postgres", dbConnectionString)
+    if err != nil {
+        log.Fatal("Failed to connect to database: ", err)
+    }
+    defer db.Close()
 
 	// Automigrate the Link struct to create the "links" table in the database
 	db.AutoMigrate(&Link{})

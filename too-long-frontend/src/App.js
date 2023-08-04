@@ -1,5 +1,3 @@
-// src/App.js
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import LinkForm from './LinkForm';
@@ -10,7 +8,7 @@ function App() {
 
   const fetchLinks = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/links');
+      const response = await axios.get(`http://localhost:8080/links`);
       setLinks(response.data);
     } catch (error) {
       console.error(error);
@@ -21,13 +19,8 @@ function App() {
     setLinks([...links, link]);
   };
 
-  const handleLinkDeleted = async (id) => {
-    try {
-      await axios.delete(`http://localhost:8080/links/${id}`);
-      setLinks(links.filter((link) => link.ID !== id));
-    } catch (error) {
-      console.error(error);
-    }
+  const handleLinkDeleted = (id) => {
+    setLinks(links.filter((link) => link.ID !== id));
   };
 
   useEffect(() => {

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -10,7 +9,7 @@ const LinkForm = ({ onLinkAdded }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:8080/links', { url, description });
+      const response = await axios.post(`http://localhost:8080/links`, { url, description });
       onLinkAdded(response.data);
       setUrl('');
       setDescription('');
