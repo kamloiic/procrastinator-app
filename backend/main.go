@@ -25,14 +25,12 @@ type Link struct {
 }
 
 func main() {
-	// Connect to the PostgreSQL database
 	dbHost := os.Getenv("DB_HOST")
     dbPort := os.Getenv("DB_PORT")
     dbUser := os.Getenv("DB_USER")
     dbPassword := os.Getenv("DB_PASSWORD")
     dbName := os.Getenv("DB_NAME")
     
-    // Construct the database connection string
     dbConnectionString := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbHost, dbPort, dbUser, dbName, dbPassword)
 
 	db, err = gorm.Open("postgres", dbConnectionString)
@@ -41,20 +39,16 @@ func main() {
     }
     defer db.Close()
 
-	// Automigrate the Link struct to create the "links" table in the database
 	db.AutoMigrate(&Link{})
 
-	// Initialize the Gin router
 	r := gin.Default()
 
 	r.Use(cors.Default())
 
-	// Define the API endpoints
 	r.GET("/links", getLinks)
 	r.POST("/links", createLink)
 	r.DELETE("/links/:id", deleteLink)
 
-	// Start the server
 	port := 8080
 	fmt.Printf("Server started on port %d\n", port)
 	r.Run(fmt.Sprintf(":%d", port))
@@ -66,7 +60,6 @@ func getLinks(c *gin.Context) {
 	c.JSON(200, links)
 }
 
-// Create a new link
 func createLink(c *gin.Context) {
 	var link Link
 	c.BindJSON(&link)
@@ -74,7 +67,6 @@ func createLink(c *gin.Context) {
 	c.JSON(201, link)
 }
 
-// Delete a link by ID
 func deleteLink(c *gin.Context) {
 	id := c.Param("id")
 	var link Link

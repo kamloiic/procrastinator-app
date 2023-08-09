@@ -1,10 +1,11 @@
 import React from 'react';
 import axios from 'axios';
+import './styles.css';
 
 const LinkList = ({ links, onDelete }) => {
   const handleLinkDeleted = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/links/${id}`);
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/${id}`);
       onDelete(id);
     } catch (error) {
       console.error(error);

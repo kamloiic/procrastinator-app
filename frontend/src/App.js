@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import LinkForm from './LinkForm';
 import LinkList from './LinkList';
+import './styles.css';
 
 function App() {
   const [links, setLinks] = useState([]);
 
   const fetchLinks = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/links`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}`);
       setLinks(response.data);
     } catch (error) {
       console.error(error);
