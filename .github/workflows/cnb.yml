@@ -17,8 +17,8 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Build and push Docker image
+        working-directory: ./backend
         run: |
-          cd ../backend
           pack build --builder paketobuildpacks/builder:base tl-backend
 
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
