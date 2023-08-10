@@ -1,4 +1,4 @@
-name: Build and Deploy Backend
+name: Build and Deploy to GitHub Container Registry
 
 on:
   push:
@@ -6,46 +6,38 @@ on:
       - main
 
 jobs:
-  build-deploy-backend:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.16
-
-      - name: Build and push Docker image
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        
+      - name: Install Cloud Native Buildpacks Pack CLI
+        run: |
+          curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.20.0/pack-v0.20.0-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack
+      - name: Build and push Go image
+        working-directory: ./backend
+        run: |
+          pack build --builder paketobuildpacks/builder:base tl-backend
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+          docker tag tl-backend docker.pkg.github.com/${{ github.repository }}/tl-backend:latest
+          docker push docker.pkg.github.com/${{ github.repository }}/tl-backend:latest
         env:
-          REGISTRY: ghcr.io
-          IMAGE_NAME: kamloiic/tl-backend
+          DOCKER_CLI_EXPERIMENTAL: enabled
+      - name: Build and push ReactJS image
+        working-directory: ./frontend
         run: |
-          curl -sSL https://github.com/buildpacks/pack/releases/latest/download/pack-${RUNNER_OS}-${RUNNER_ARCH}.tar.gz | sudo tar xz -C /usr/local/bin
-          
-          # Build and push image
-          pack build $REGISTRY/$IMAGE_NAME \
-            --builder paketobuildpacks/builder:base \
-            --path ./backend \
-            --publish
+          pack build --builder paketobuildpacks/builder:base tl-frontend
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+          docker tag tl-frontend docker.pkg.github.com/${{ github.repository }}/tl-frontend:latest
+          docker push docker.pkg.github.com/${{ github.repository }}/tl-frontend:latest
+        env:
+          DOCKER_CLI_EXPERIMENTAL: enabled
 
-      - name: Configure Docker CLI
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Deploy to GitHub Container Registry
-        run: |
-          IMAGE_NAME=${{ env.IMAGE_NAME }}
-          REGISTRY=${{ env.REGISTRY }}
-          
-          # Add image tags
-          docker tag $IMAGE_NAME:latest $REGISTRY/$IMAGE_NAME:latest
-
-          # Push images
-          docker push $REGISTRY/$IMAGE_NAME:latest
-
-      - name: Cleanup Docker images
+      - name: Clean up Docker images
         run: |
           docker image prune -f
-
