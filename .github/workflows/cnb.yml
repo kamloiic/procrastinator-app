@@ -26,7 +26,7 @@ jobs:
         run: |
           pack build --builder paketobuildpacks/builder:base tl-backend
 
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
 
           docker tag tl-backend docker.pkg.github.com/${{ github.repository }}/tl-backend:latest
 
