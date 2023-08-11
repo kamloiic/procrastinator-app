@@ -19,7 +19,9 @@ jobs:
       - name: Install Cloud Native Buildpacks Pack CLI
         run: |
           curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.20.0/pack-v0.20.0-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack
+
       - name: Build and push Go image
+        if: ${{ github.event.head_commit.modified | join(' ') =~ './backend/' }}
         working-directory: ./backend
         run: |
           pack build --builder paketobuildpacks/builder:base tl-backend
@@ -28,7 +30,9 @@ jobs:
           docker push docker.pkg.github.com/${{ github.repository }}/tl-backend:latest
         env:
           DOCKER_CLI_EXPERIMENTAL: enabled
+
       - name: Build and push ReactJS image
+        if: ${{ github.event.head_commit.modified | join(' ') =~ './frontend/' }}
         working-directory: ./frontend
         run: |
           pack build --builder paketobuildpacks/builder:base tl-frontend
