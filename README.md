@@ -8,7 +8,7 @@ This is a TL;DR (Too Long Didn't Read) and TL;DW (Too Long Didn't Watch) applica
 
 This app uses PostgreSQL Database, the Scaleway Container registry, the Kapsule Kubernetes Cluster and the managed services of the Scaleway Cloud Infrastructure through the deployment.
 
-<img src="images/Architecture.png" width="600" height="250">
+<img src="images/Architecture.png" width="500" height="200">
 
 ### Understand the Go Application
 
@@ -42,19 +42,7 @@ The container images were built with [Cloud-Native Buildpacks](https://buildpack
 No need to write a `Dockerfile` anymore: using CNB you get
 secured up-to-date container images out of your source code.
 
-<img src="images/buildpacks.png" width="500" height="250">
+<img src="images/Containers.png" width="500" height="250">
 
-### Getting started
 
-Requirements: 
-* The `pack` CLI (https://github.com/buildpacks/pack/releases)
-* Docker daemon installed 
-
-Access your backend or frontend directory and run this command to build a container image with the Paketo Buildpacks:
-```
-pack build --builder gcr.io/paketo-buildpacks/builder:base
-```
-Your container will be up and running in minutes.
-
-You can run it or deploy it in a container registry. 
 
