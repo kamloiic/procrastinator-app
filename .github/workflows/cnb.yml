@@ -21,7 +21,7 @@ jobs:
           curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.20.0/pack-v0.20.0-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack
 
       - name: Build and push Go image
-        if: ${{ github.event.head_commit.modified | join(' ') =~ './backend/' }}
+        if: ${{ needs.check_backend.outputs.backend_modified == 'true' }}
         working-directory: ./backend
         run: |
           pack build --builder paketobuildpacks/builder:base tl-backend
@@ -32,7 +32,7 @@ jobs:
           DOCKER_CLI_EXPERIMENTAL: enabled
 
       - name: Build and push ReactJS image
-        if: ${{ github.event.head_commit.modified | join(' ') =~ './frontend/' }}
+        if: ${{ needs.check_frontend.outputs.frontend_modified == 'true' }}
         working-directory: ./frontend
         run: |
           pack build --builder paketobuildpacks/builder:base tl-frontend
@@ -45,3 +45,21 @@ jobs:
       - name: Clean up Docker images
         run: |
           docker image prune -f
+
+  check_backend:
+    runs-on: ubuntu-latest
+    outputs:
+      backend_modified: ${{ steps.check_backend.outputs.backend_modified }}
+    steps:
+      - name: Check for modified files in backend
+        id: check_backend
+        run: echo ::set-output name=backend_modified::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^./backend/')
+
+  check_frontend:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend_modified: ${{ steps.check_frontend.outputs.frontend_modified }}
+    steps:
+      - name: Check for modified files in frontend
+        id: check_frontend
+        run: echo ::set-output name=frontend_modified::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^./frontend/')
