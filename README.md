@@ -6,7 +6,7 @@ This is a TL;DR (Too Long Didn't Read) and TL;DW (Too Long Didn't Watch) applica
 
 <img src="images/Application.png" width="400" height="300">
 
-This app uses PostgreSQL Database, the Scaleway Container registry, the Kapsule Kubernetes Cluster and the managed services of the Scaleway Cloud Infrastructure through the deployment.
+This app uses PostgreSQL Database, the Github Container registry, the Kapsule Kubernetes Cluster and the managed services of the Scaleway Cloud Infrastructure through the deployment.
 
 <img src="images/Architecture.png" width="500" height="200">
 
@@ -39,10 +39,29 @@ To set up the frontend application locally, run:
 
 The container images were built with [Cloud-Native Buildpacks](https://buildpacks.io) (CNB) and [Paketo Buildpacks](https://paketo.io).
 
-No need to write a `Dockerfile` anymore: using CNB you get
+No need to write Dockerfiles anymore: using CNB you get
 secured up-to-date container images out of your source code.
 
-<img src="images/Containers.png" width="500" height="250">
+<img src="images/Containers.png" width="400" height="200">
+
+### Build and Push the Docker images to the OCI Registry 
+
+The OCI Container Regisry is where your Docker images are managed. The GitHub Container Registry is used for this project.
+
+Run `build.sh` script to build and push the helidon-se image into the repository
+
+```
+        ./build.sh
+```
+
+In a couple of minutes, you should have successfully built and pushed the images into the OCI repository.
+
+<img src="images/Registry.png" width="700" height="150">
+
+
+## Deployment on Kubernetes 
+
+
 
 
 
