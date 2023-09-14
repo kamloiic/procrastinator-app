@@ -14,12 +14,12 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: kamloic/tl-frontend:latest
+        image: rg.fr-par.scw.cloud/ns-toolong/too-long-frontend:0.1
         ports:
           - containerPort: 3000
         env:
           - name: REACT_APP_BACKEND_URL
-            value: http://backend.51.159.113.86.nip.io/links
+            value: http://backend.51.159.8.169.nip.io/links
 
 ---
 
@@ -47,7 +47,7 @@ metadata:
     ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: frontend.51.159.10.52.nip.io
+    - host: frontend.51.159.8.169.nip.io
       http:
         paths:
           - path: /

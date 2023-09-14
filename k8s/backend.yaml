@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend-container
-        image: kamloic/tl-backend:latest
+        image: rg.fr-par.scw.cloud/ns-toolong/too-long-backend:0.1
         ports:
           - containerPort: 8080
         env:
@@ -56,7 +56,7 @@ metadata:
     ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: backend.51.159.113.86.nip.io
+    - host: backend.51.159.8.169.nip.io
       http:
         paths:
           - path: /links

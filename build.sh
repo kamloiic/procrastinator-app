@@ -2,16 +2,20 @@
 
 IMAGE_NAME=too-long
 IMAGE_VERSION=0.1
+NAMESPACE=ns-toolong
+
+docker login rg.fr-par.scw.cloud/ns-toolong -u nologin --password-stdin <<< "$SCW_SECRET_KEY"
 
 cd backend
-pack build ${IMAGE_NAME}-backend --builder paketobuildpacks/builder:base
+pack build ${IMAGE_NAME}-backend:${IMAGE_VERSION} --builder paketobuildpacks/builder:base
 
-docker tag ${IMAGE_NAME}-backend:latest docker.pkg.github.com/kamloiic/${IMAGE_NAME}/${IMAGE_NAME}-backend:${IMAGE_VERSION}
-echo "${GHCR_TOKEN}" | docker login docker.pkg.github.com -u kamloiic --password-stdin
-docker push docker.pkg.github.com/kamloiic/${IMAGE_NAME}/${IMAGE_NAME}-backend:${IMAGE_VERSION}
+docker tag ${IMAGE_NAME}-backend:${IMAGE_VERSION} rg.fr-par.scw.cloud/ns-toolong/${IMAGE_NAME}-backend:${IMAGE_VERSION}
+docker push rg.fr-par.scw.cloud/${NAMESPACE}/${IMAGE_NAME}-backend:${IMAGE_VERSION}
 
 cd ../frontend
-pack build ${IMAGE_NAME}-frontend --builder paketobuildpacks/builder:base
+pack build ${IMAGE_NAME}-frontend:${IMAGE_VERSION} --builder paketobuildpacks/builder:base
 
-docker tag ${IMAGE_NAME}-frontend:latest docker.pkg.github.com/kamloiic/${IMAGE_NAME}/${IMAGE_NAME}-frontend:${IMAGE_VERSION}
-docker push docker.pkg.github.com/kamloiic/${IMAGE_NAME}/${IMAGE_NAME}-frontend:${IMAGE_VERSION}
+docker tag ${IMAGE_NAME}-frontend:${IMAGE_VERSION} rg.fr-par.scw.cloud/${NAMESPACE}/${IMAGE_NAME}-frontend:${IMAGE_VERSION}
+docker push rg.fr-par.scw.cloud/${NAMESPACE}/${IMAGE_NAME}-frontend:${IMAGE_VERSION}
+
+
