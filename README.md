@@ -2,44 +2,74 @@
 
 ## Overview 
 
-This is a TL;DR (Too Long Didn't Read) and TL;DW (Too Long Didn't Watch) application made in Go and React.js.
+TooLong is an Application that helps to save different links to review them later. It includes 2 components:
 
-<img src="images/app.png" width="400" height="300"> 
+- `backend` is a service managing links (Go) 
+- `frontend` is a frontend of the application (React)
 
+![Ui](images/ui.png)
 
-<img src="images/architecture.png" width="500" height="200">
+All the services are built into Docker images. They have been deployed in a Kubernetes Cluster following the pattern:
 
+![Architecture](images/arch.png)
 
-### Understand the Go Application
+Ingress <--> Service <--> Deployment
 
-The backend implements three REST APIs including: 
+![Kubernetes Resources](images/arch-k8s.png)
 
-* GET /links - Return current list of links
-* POST /links - Add a new link to the list
-* DELETE /links/:id - Delete a link from the list
+All the procedure has been tested only on Mac using 
+- Docker for Mac
+- [Scaleway Kapsule](https://www.scaleway.com/fr/kubernetes-kapsule/)
+- Helm
+- Contour
 
-To run the backend application locally, run: 
- ```
-    cd too-long-app/backend
-    go run main.go 
+## Setup the infrastructure
+
+### New Docker registry
+
+Create a new Docker registry locally using registry.local as DNS name.
+```
+./k8s/new-docker-registry.sh
+```
+Edit your local hostname config /etc/hosts
+```
+127.0.0.1 registry.local
 ```
 
-### Understand the ReactJS Application
+### Create k8s Cluster
 
-There is a main part called "App", which renders the main interface for the application. The "LinkForm" allows users to add new linsk and their descriptions. The "LinkList" displays the list of links and their associated descriptions. 
+Create a new Kapsule cluster. It deploys Helm & Contour.
 
-To set up the frontend application locally, run: 
- ```
-    cd too-long-app/frontend
-    npm install 
-    npm start 
+Run the following command to create a cluster.
+```
+scw k8s cluster create name=$(CLUSTER_NAME)
+```
+You will get a cluster ID. Then run this command to install a KubeConfig configuration file 
+```
+scw k8s kubeconfig install $(CLUSTER_ID)
+```
+The next step is to add a node pool to your K8s cluster.
+```
+scw k8s pool create cluster-id=$(CLUSTER_ID) name=$(POOL_NAME) node-type=GP1_XS size=number-of-nodes-wanted
+```
+We are using [Contour](https://github.com/projectcontour/contour/tree/main) as an ingress.
+
+To install Contour, run the following commands
+```
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install my-release bitnami/contour --namespace contour --create-namespace
+watch kubectl -n contour get po,svc
 ```
 
-## Containers
+### Building Docker images with kPack
 
-The container images were built with [Cloud-Native Buildpacks](https://buildpacks.io) (CNB) and [Paketo Buildpacks](https://paketo.io).
+The Docker images are built using the [Cloud Native Buildpack](https://buildpacks.io) and [kpack](https://github.com/buildpacks-community/kpack). 
 
-<img src="images/containers.png" width="500" height="200">
+Install kPack into the cluster
+```
+kubectl apply  --filename release-<version>.yaml
+kubectl get pods --namespace kpack --watch
+```
 
 ### Build and Push the Docker images to the OCI Registry 
 
@@ -54,53 +84,4 @@ Run `build.sh` script to build and push the images into the repository
 In a couple of minutes, you should have successfully built and pushed the images into the OCI repository.
 
 ## Deployment on Kubernetes 
-
-
-
-1. Run the `deploy.sh` script
-
-  ```
-  ./deploy.sh
-  ```
-If everything runs correctly the script will output something like this.
-<img src="images/deploy-output.png" width="600" height="150">
-
-2. Check the status using the following commands
-
-The following command returns the Kubernetes service of MyToDo application with a load balancer exposed through an external API
-  ```
-  services
-  ```
-This will run `kubectl get services` in the background, but the setup script creates aliases for ease of use
-
-<img src="images/services-output.png" width="500" height="90">
-
-3. The following command returns all the pods running in your kubernetes cluster:
-  ```
-  pods
-  ```
-This will run `kubectl get pods` in the background, but the setup script creates aliases for ease of use
-
-Open the website
-  ```
-  http://frontend.51.159.8.169.nip.io
-  ```
-
-
-<img src="images/pods-output.png" width="500" height="200">
-
-If you make changes to the image, you need to delete the service and the pods by running undeploy.sh then redo Steps 2 & 3.
-
- Run the `undeploy.sh` script
-  ```
-  ./undeploy.sh
-  ```
-
-
-
-
-
-
-
-
 
