@@ -14,12 +14,14 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: rg.fr-par.scw.cloud/ns-toolong/too-long-frontend:0.1
+        image: ghcr.io/kamloiic/too-long-app/frontend:0.1
         ports:
           - containerPort: 3000
         env:
           - name: REACT_APP_BACKEND_URL
-            value: http://backend.51.159.8.169.nip.io/links
+            value: http://backend.10.64.140.43.nip.io/links
+      imagePullSecrets:
+         - name: ghcr-secret
 
 ---
 
@@ -36,24 +38,6 @@ spec:
       targetPort: 3000
   type: LoadBalancer
 
----
 
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: frontend-ingress
-  annotations:
-    kubernetes.io/ingress.class: contour
-    ingress.kubernetes.io/rewrite-target: /
-spec:
-  rules:
-    - host: frontend.51.159.8.169.nip.io
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend-service
-                port:
-                  number: 80
+
+

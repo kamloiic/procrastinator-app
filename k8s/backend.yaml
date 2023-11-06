@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend-container
-        image: rg.fr-par.scw.cloud/ns-toolong/too-long-backend:0.1
+        image: ghcr.io/kamloiic/too-long-app/backend:0.1
         ports:
           - containerPort: 8080
         env:
@@ -28,6 +28,8 @@ spec:
             value: too-long-pass
           - name: DB_NAME
             value: postgres
+      imagePullSecrets:
+        - name: ghcr-secret
 
 ---
 
@@ -44,27 +46,4 @@ spec:
       port: 80
       targetPort: 8080
   type: LoadBalancer
-
----
-
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: backend-ingress
-  annotations:
-    kubernetes.io/ingress.class: contour
-    ingress.kubernetes.io/rewrite-target: /
-spec:
-  rules:
-    - host: backend.51.159.8.169.nip.io
-      http:
-        paths:
-          - path: /links
-            pathType: Prefix
-            backend:
-              service:
-                name: backend-service
-                port:
-                  number: 80
-
 

@@ -17,43 +17,29 @@ Ingress <--> Service <--> Deployment <--> {Secrets}
 
 ![Kubernetes Resources](images/arch-k8s.png)
 
-All the procedure has been tested only on Mac using 
-- Docker for Mac
-- [Scaleway Kapsule](https://www.scaleway.com/fr/kubernetes-kapsule/)
-- Helm
-- Contour
+All the procedure has been tested using 
+- [Tanzu Kubernetes Grid](https://tanzu.vmware.com/kubernetes-grid) (TKG)
+- [Contour](https://projectcontour.io)
 
 ## Setup the infrastructure
 
-### Create k8s Cluster
+### New Tanzu Kubernetes Cluster
 
-Create a new Kapsule cluster. It deploys Helm & Contour.
+Create a new TKG cluster using the Supervisor cluster and the vSphere with Tanzu namespace.
 
-Run the following command to create a cluster.
-```
-scw k8s cluster create name=<cluster_name>
-```
-You will get a cluster ID. Then run this command to install a KubeConfig configuration file 
-```
-scw k8s kubeconfig install <cluster_id>
-```
-The next step is to add a node pool to your K8s cluster.
-```
-scw k8s pool create cluster-id=<cluster-id> name=<pool_name> node-type=GP1_XS size=number-of-nodes-wanted
-```
-We are using [Contour](https://github.com/projectcontour/contour/tree/main) as an ingress.
+This command will also install [Contour](https://projectcontour.io) in the TKG cluster.
 
-To install Contour, run the following commands
+Edit ```k8s/new-tkg-cluster.yaml``` and set the values for
+- SC_IP 
+- NAMESPACE
+
 ```
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install my-release bitnami/contour --namespace contour --create-namespace
-watch kubectl -n contour get po,svc
+./k8s/new-tkg-cluster.sh 
 ```
 
-## Build Docker images with Cloud Native Buildpacks
 
-The Docker images are built using the [Cloud Native Buildpack](https://buildpacks.io) and [Paketo Buildpacks](https://paketo.io). 
 
-![cnb](images/cnb.png)
+
+
 
 
