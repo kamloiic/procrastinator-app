@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: ghcr.io/kamloiic/too-long-app/frontend:0.1
+        image: kamloic/tl-frontend:0.1
         ports:
           - containerPort: 3000
         env:

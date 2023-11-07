@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend-container
-        image: ghcr.io/kamloiic/too-long-app/backend:0.1
+        image: kamloic/tl-backend:0.1
         ports:
           - containerPort: 8080
         env:
