@@ -13,13 +13,10 @@ All the services are built into Docker images. They have been deployed in a Kube
 
 ![Architecture](images/arch.png)
 
-Ingress <--> Service <--> Deployment <--> {Secrets}
-
-![Kubernetes Resources](images/arch-k8s.png)
-
-All the procedure has been tested using 
-- [Tanzu Kubernetes Grid](https://tanzu.vmware.com/kubernetes-grid) (TKG)
+All the procedure has been tested on Windows (and Mac) using 
+- [Tanzu Kubernetes Grid](https://tanzu.vmware.com/kubernetes-grid) (vSphere with Tanzu)
 - [Contour](https://projectcontour.io)
+
 
 ## Setup the infrastructure
 
@@ -27,7 +24,6 @@ All the procedure has been tested using
 
 Create a new TKG cluster using the Supervisor cluster and the vSphere with Tanzu namespace.
 
-This command will also install [Contour](https://projectcontour.io) in the TKG cluster.
 
 Edit ```k8s/new-tkg-cluster.yaml``` and set the values for
 - SC_IP 
@@ -36,6 +32,45 @@ Edit ```k8s/new-tkg-cluster.yaml``` and set the values for
 ```
 ./k8s/new-tkg-cluster.sh 
 ```
+
+This command will also install [Contour](https://projectcontour.io) in the TKG cluster.
+
+Record the external IP of the envoy service deployed previously
+```
+kubectl get svc -n projectcontour
+...
+NAME      TYPE           CLUSTER-IP       EXTERNAL-IP    PORT(S)                      AGE
+contour   ClusterIP      10.104.172.208   <none>         8001/TCP                     7d2h
+envoy     LoadBalancer   10.108.0.184     172.16.110.7   80:31880/TCP,443:31564/TCP   7d2h
+```
+
+## Deployments 
+
+Deploy the Kubernetes ressources with this command
+```
+export K8S_NS='default'
+kubectl apply -f k8s/postgres.yaml -n ${K8S_NS}
+kubectl apply -f k8s/backend.yaml -n ${K8S_NS}
+kubectl apply -f k8s/frontend.yaml -n ${K8S_NS}
+```
+
+Edit the /etc/hosts file
+```
+172.16.110.7 frontend.172.16.110.7.nip.io
+172.16.110.7 backend.172.16.110.7.nip.io
+```
+
+Open the website using the link ```http://frontend.172.16.110.7.nip.io/```
+
+
+
+
+
+
+
+
+
+
 
 
 

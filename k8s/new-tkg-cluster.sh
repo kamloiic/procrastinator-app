@@ -5,6 +5,7 @@ export NAMESPACE=lkam-nms
 
 # Login using kubectl
 kubectl vsphere login --server $SC_IP --vsphere-username administrator@vsphere.local
+kubectl vsphere login --server tanzu.demo.lab --vsphere-username administrator@vsphere.local --tanzu-kubernetes-cluster-namespace tkc-nms --tanzu-kubernetes-cluster-name tkc-1
 
 #Set kubectl context to be the supervisor cluster
 kubectl config use-context $NAMESPACE

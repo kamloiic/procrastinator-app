@@ -47,3 +47,24 @@ spec:
       targetPort: 8080
   type: LoadBalancer
 
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend-ingress
+  annotations:
+    kubernetes.io/ingress.class: contour
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: backend.172.16.110.7.nip.io
+      http:
+        paths:
+          - path: /links
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-service
+                port:
+                  number: 80
