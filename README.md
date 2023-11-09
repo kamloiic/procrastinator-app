@@ -13,9 +13,11 @@ All the services are built into Docker images. They have been deployed in a Kube
 
 ![Architecture](images/arch.png)
 
-All the procedure has been tested on Windows (and Mac) using 
+All the procedure has been tested on Windows (and Mac) using
+- Docker  
 - [Tanzu Kubernetes Grid](https://tanzu.vmware.com/kubernetes-grid) (vSphere with Tanzu)
 - [Contour](https://projectcontour.io)
+- Helm
 
 
 ## Setup the infrastructure
@@ -44,6 +46,22 @@ contour   ClusterIP      10.104.172.208   <none>         8001/TCP               
 envoy     LoadBalancer   10.108.0.184     172.16.110.7   80:31880/TCP,443:31564/TCP   7d2h
 ```
 
+### Setup Harbor Registry 
+
+
+
+
+### Cloud Native Buildpacks using kPack
+
+Build containers using [Cloud Native Buildpacks](https://buildpacks.io/)(CNB) instead of writting ```Dockerfile```. 
+
+Install kPack
+```
+kubectl apply -f https://github.com/buildpacks-community/kpack/releases/download/v0.11.3/release-0.11.3.yaml
+```
+
+
+
 ## Deployments 
 
 Deploy the Kubernetes ressources with this command
@@ -61,6 +79,12 @@ Edit the /etc/hosts file
 ```
 
 Open the website using the link ```http://frontend.172.16.110.7.nip.io/```
+
+
+
+
+
+
 
 
 
