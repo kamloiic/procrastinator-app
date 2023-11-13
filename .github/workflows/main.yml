@@ -1,0 +1,54 @@
+name: Build Containers
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker.io
+        docker --version
+      env:
+        DOCKER_BUILDKIT: 1
+
+    - name: Build Go Backend Container
+      working-directory: ../backend
+      run: |
+        pack build ghcr.io/kamloiic/tl-backend --path . --builder heroku/buildpacks:20
+      env:
+        PACK_STACK_ID: "heroku-20"
+        DOCKER_BUILDKIT: 1
+
+    - name: Build React Frontend Container
+      working-directory: ../frontend
+      run: |
+        pack build ghcr.io/kamloiic/tl-frontend --path . --builder heroku/buildpacks:18
+      env:
+        PACK_STACK_ID: "heroku-18"
+        DOCKER_BUILDKIT: 1
+
+    - name: Docker Login
+      run: |
+        echo $CR_PAT | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      env:
+        CR_PAT: ${{ secrets.CR_PAT }}
+
+    - name: Push Go Backend Container
+      run: |
+        docker push ghcr.io/kamloiic/tl-backend
+      if: success()
+
+    - name: Push React Frontend Container
+      run: |
+        docker push ghcr.io/kamloiic/tl-frontend
+      if: success()
