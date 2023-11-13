@@ -13,9 +13,9 @@ All the services are built into Docker images. They have been deployed in a Kube
 
 ![Architecture](images/arch.png)
 
-All the procedure has been tested on Windows (and Mac) using
+All the procedure has been tested using
 - Docker  
-- [Tanzu Kubernetes Grid](https://tanzu.vmware.com/kubernetes-grid) (vSphere with Tanzu)
+- [Tanzu Kubernetes Grid](https://tanzu.vmware.com/kubernetes-grid)
 - [Contour](https://projectcontour.io)
 - Helm
 
@@ -25,7 +25,6 @@ All the procedure has been tested on Windows (and Mac) using
 ### New Tanzu Kubernetes Cluster
 
 Create a new TKG cluster using the Supervisor cluster and the vSphere with Tanzu namespace.
-
 
 Edit `k8s/new-tkg-cluster.yaml` and set the values for
 - SC_IP 
@@ -46,14 +45,9 @@ contour   ClusterIP      10.104.172.208   <none>         8001/TCP               
 envoy     LoadBalancer   10.108.0.184     172.16.110.7   80:31880/TCP,443:31564/TCP   7d2h
 ```
 
-### Setup Harbor Registry 
-
-
-
-
 ### Cloud Native Buildpacks 
 
-Build containers using [Cloud Native Buildpacks](https://buildpacks.io/)(CNB) and [pack CLI](https://buildpacks.io/docs/tools/pack/) the instead of writting `Dockerfile`. 
+Build containers using [Cloud Native Buildpacks](https://buildpacks.io/)(CNB) and the [pack CLI](https://buildpacks.io/docs/tools/pack/) instead of writting `Dockerfile`. 
 
 This GitHub Actions workflow automates the building and pushing of containers for the Go backend and the React.js frontend to GitHub Container Registry. It triggers on a push to the `main` 
 
