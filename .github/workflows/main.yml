@@ -25,7 +25,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Build Go Backend Container
-      working-directory: ../backend
+      working-directory: backend
       run: |
         pack build ghcr.io/kamloiic/tl-backend --path . --builder heroku/buildpacks:20
       env:
@@ -33,7 +33,7 @@ jobs:
         DOCKER_BUILDKIT: 1
 
     - name: Build React Frontend Container
-      working-directory: ../frontend
+      working-directory: frontend
       run: |
         pack build ghcr.io/kamloiic/tl-frontend --path . --builder heroku/buildpacks:18
       env:
