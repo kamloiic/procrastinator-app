@@ -37,7 +37,7 @@ jobs:
       run: |
         pack build ghcr.io/kamloiic/tl-frontend --path . --builder heroku/buildpacks:18
       env:
-        PACK_STACK_ID: "heroku-18"
+        PACK_STACK_ID: "heroku-20"
         DOCKER_BUILDKIT: 1
 
     - name: Docker Login
