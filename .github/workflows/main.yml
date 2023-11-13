@@ -10,16 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    - name: Install pack CLI
+      run: |
+        curl -sSL https://github.com/buildpacks/pack/releases/download/v0.23.0/pack-v0.23.0-linux.tgz | tar xz -C /tmp
+        mv /tmp/pack /usr/local/bin/pack
+      if: runner.os == 'Linux'
+
+    - name: Make pack CLI executable
+      run: |
+        chmod +x /usr/local/bin/pack
+      if: runner.os == 'Linux'
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Set up Docker
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y docker.io
-        docker --version
-      env:
-        DOCKER_BUILDKIT: 1
 
     - name: Build Go Backend Container
       working-directory: ../backend
