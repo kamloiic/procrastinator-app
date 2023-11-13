@@ -51,9 +51,9 @@ envoy     LoadBalancer   10.108.0.184     172.16.110.7   80:31880/TCP,443:31564/
 
 
 
-### Cloud Native Buildpacks using pack
+### Cloud Native Buildpacks 
 
-Build containers using [Cloud Native Buildpacks](https://buildpacks.io/)(CNB) instead of writting `Dockerfile`. 
+Build containers using [Cloud Native Buildpacks](https://buildpacks.io/)(CNB) and [pack CLI](https://buildpacks.io/docs/tools/pack/) the instead of writting `Dockerfile`. 
 
 This GitHub Actions workflow automates the building and pushing of containers for the Go backend and the React.js frontend to GitHub Container Registry. It triggers on a push to the `main` 
 
@@ -120,7 +120,8 @@ jobs:
       if: success()
 ```
 
-Replace `your-username` with the GitHub username and adjust the paths as needed. 
+Replace `your-username` with the GitHub username and adjust the paths as needed
+
 Commit and push this workflow 
 
 ## Deployments 
