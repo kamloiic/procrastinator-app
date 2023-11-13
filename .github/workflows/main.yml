@@ -35,7 +35,7 @@ jobs:
     - name: Build React Frontend Container
       working-directory: frontend
       run: |
-        pack build ghcr.io/kamloiic/tl-frontend --path . --builder heroku/buildpacks:18
+        pack build ghcr.io/kamloiic/tl-frontend --path . --builder heroku/buildpacks:20
       env:
         PACK_STACK_ID: "heroku-20"
         DOCKER_BUILDKIT: 1
